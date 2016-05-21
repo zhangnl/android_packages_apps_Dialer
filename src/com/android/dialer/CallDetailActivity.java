@@ -233,7 +233,7 @@ public class CallDetailActivity extends Activity
 
                 return ContactDisplayUtils.getLabelForCall(getApplicationContext(),
                         details.number.toString(), details.numberType,
-                        details.numberLabel, callMethodName);
+                        details.numberLabel, callMethodName) + " " +details.geocode;
             } else {
                 return details.geocode;
             }
