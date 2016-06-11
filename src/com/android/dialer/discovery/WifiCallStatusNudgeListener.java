@@ -34,6 +34,7 @@ public class WifiCallStatusNudgeListener {
     private final static int PRECISE_CALL_STATE_DIALING = 2;
 
     private static Context mContext;
+    private static TelephonyManager mTelephonyManager;
 
     private static BroadcastReceiver mWifiListener = new BroadcastReceiver() {
         @Override
@@ -114,9 +115,8 @@ public class WifiCallStatusNudgeListener {
         mContext = c;
         mReceiverRegistered.set(false);
 
-        TelephonyManager telephony
-                = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
-        telephony.listen(mPhoneStateListener, PhoneStateListener.LISTEN_PRECISE_CALL_STATE);
+        mTelephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+        mTelephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_PRECISE_CALL_STATE);
     }
 
     private static void startReceiver() {
@@ -140,14 +140,14 @@ public class WifiCallStatusNudgeListener {
     private static void callOnWifiSuccess() {
         if (DEBUG) Log.v(TAG, "call was made with wifi connected the whole time");
 
-        SharedPreferences preferences = mContext
-                .getSharedPreferences(DialtactsActivity.SHARED_PREFS_NAME, Context.MODE_PRIVATE);
-
-        int currentCount = preferences.getInt(CallMethodUtils.PREF_WIFI_CALL, 0);
-        preferences.edit().putInt(CallMethodUtils.PREF_WIFI_CALL, ++currentCount).apply();
-
-        new DiscoveryEventHandler(mContext).getNudgeProvidersWithKey(
-                NudgeKey.NOTIFICATION_WIFI_CALL);
+        // If the network is roaming and we are on wifi,
+        // then we want to show a potential roaming nudge instead of a wifi nudge.
+        if (mTelephonyManager.isNetworkRoaming()) {
+            DiscoverySignalReceiver.startServiceForConnectivityChanged(mContext);
+        } else {
+            new DiscoveryEventHandler(mContext).getNudgeProvidersWithKey(
+                    NudgeKey.NOTIFICATION_WIFI_CALL);
+        }
     }
 
     private static void callOnWifiFailure() {
