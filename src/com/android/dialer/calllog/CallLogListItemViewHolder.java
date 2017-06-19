@@ -72,7 +72,6 @@ import java.util.List;
 
 import org.codeaurora.ims.utils.QtiImsExtUtils;
 import org.codeaurora.presenceserv.IPresenceService;
-import com.android.dialer.MiniMarkActivity;
 
 /**
  * This is an object containing references to views contained by the call log list item. This
@@ -112,7 +111,6 @@ public final class CallLogListItemViewHolder extends RecyclerView.ViewHolder
     public View callWithNoteButtonView;
     public ImageView workIconView;
     public ImageView videoCallIconView;
-    public View usermarkButtonView;
 
     /**
      * The row Id for the first call associated with the call log entry.  Used as a key for the
@@ -442,9 +440,6 @@ public final class CallLogListItemViewHolder extends RecyclerView.ViewHolder
             detailsButtonView = actionsView.findViewById(R.id.details_action);
             detailsButtonView.setOnClickListener(this);
 
-            usermarkButtonView = actionsView.findViewById(R.id.user_mark_action);
-            usermarkButtonView.setOnClickListener(this);
-
             callWithNoteButtonView = actionsView.findViewById(R.id.call_with_note_action);
             callWithNoteButtonView.setOnClickListener(this);
 
@@ -547,8 +542,6 @@ public final class CallLogListItemViewHolder extends RecyclerView.ViewHolder
             mVoicemailPlaybackPresenter.setPlaybackView(
                     voicemailPlaybackView, uri, mVoicemailPrimaryActionButtonClicked);
             mVoicemailPrimaryActionButtonClicked = false;
-            usermarkButtonView.setVisibility(View.GONE);
-
             // Only mark voicemail as read when not in archive tab
             if (!isArchiveTab) {
                 CallLogAsyncTaskUtil.markVoicemailAsRead(mContext, uri);
@@ -712,11 +705,6 @@ public final class CallLogListItemViewHolder extends RecyclerView.ViewHolder
                                                                            view in dialog. */
                     numberType, /* phone number type (e.g. mobile) in second line of contact view */
                     accountHandle);
-        } else if (view.getId() == R.id.user_mark_action) {
-                Intent intent = new Intent(mContext, MiniMarkActivity.class);
-                intent.putExtra("number", number);
-                DialerUtils.startActivityWithErrorToast(mContext, intent);
-
         } else {
             final IntentProvider intentProvider = (IntentProvider) view.getTag();
             if (intentProvider != null) {

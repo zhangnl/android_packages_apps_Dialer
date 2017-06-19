@@ -32,10 +32,7 @@ src_dirs += \
 
 LOCAL_SRC_FILES := $(call all-java-files-under, $(src_dirs)) $(call all-Iaidl-files-under, $(src_dirs))
 LOCAL_SRC_FILES += src/org/codeaurora/presenceserv/IPresenceService.aidl \
-                   src/org/codeaurora/presenceserv/IPresenceServiceCB.aidl \
-                   ../../providers/ContactsProvider/src/com/android/providers/contacts/NameSplitter.java \
-                   ../../providers/ContactsProvider/src/com/android/providers/contacts/HanziToPinyin.java \
-                   ../../providers/ContactsProvider/src/com/android/providers/contacts/util/NeededForTesting.java
+                   src/org/codeaurora/presenceserv/IPresenceServiceCB.aidl
 LOCAL_RESOURCE_DIR := $(addprefix $(LOCAL_PATH)/, $(res_dirs)) \
     $(support_library_root_dir)/v7/cardview/res \
     $(support_library_root_dir)/v7/recyclerview/res \
@@ -75,9 +72,6 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
     org.cyanogenmod.platform.internal \
     org.cyanogenmod.platform.sdk
 
-LOCAL_STATIC_JAVA_LIBRARIES += libSudaSdk
-LOCAL_STATIC_JAVA_LIBRARIES += libSudaPinYin
-
 LOCAL_PACKAGE_NAME := Dialer
 LOCAL_CERTIFICATE := shared
 LOCAL_PRIVILEGED_MODULE := true
@@ -89,4 +83,4 @@ LOCAL_PROGUARD_FLAG_FILES := proguard.flags $(incallui_dir)/proguard.flags
 include $(BUILD_PACKAGE)
 
 # Use the following include to make our test apk.
-#include $(call all-makefiles-under,$(LOCAL_PATH))
+include $(call all-makefiles-under,$(LOCAL_PATH))
